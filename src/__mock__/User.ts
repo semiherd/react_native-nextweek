@@ -1,0 +1,88 @@
+import { User } from '../context/user/type.user'
+import image1 from '../asset/image/profile/photo1.png'
+import image2 from '../asset/image/profile/photo2.png'
+import image3 from '../asset/image/profile/photo3.png'
+import image4 from '../asset/image/profile/photo4.png'
+ 
+export const userList:User[]= [
+	{
+		"_id": "user1",
+		"name": "User1",
+		"id": "User1@web.de",
+		"email": "User1@web.de",
+		"password": "12345678",
+		"employeeType": 1,
+		"street": "default",
+		"houseNumber": 0,
+		"postalCode": 0,
+		"vacationDays": 50,
+		"monthlyHours": 116,
+		"breakTimer": 13,
+		"employeeScore": 0,
+		"location": "63526d4fd418931b6f5cd8b6",
+		"manager": "2",
+		"date": "2022-10-27T09:27:29.822Z",
+		"__v": 0,
+		"image": image1
+	},
+	{
+		"_id": "user2",
+		"name": "User2",
+		"id": "User2@web.de",
+		"email": "User2@web.de",
+		"password": "12345678",
+		"employeeType": 1,
+		"street": "default",
+		"houseNumber": 0,
+		"postalCode": 0,
+		"vacationDays": 50,
+		"monthlyHours": 116,
+		"breakTimer": 13,
+		"employeeScore": 0,
+		"location": "63526d4fd418931b6f5cd8b6",
+		"manager": "2",
+		"date": "2022-10-27T09:27:29.822Z",
+		"__v": 0,
+		"image": image2
+	},
+	{
+		"_id": "user3",
+		"name": "User3",
+		"id": "User3@web.de",
+		"email": "User3@web.de",
+		"password": "12345678",
+		"employeeType": 1,
+		"street": "default",
+		"houseNumber": 0,
+		"postalCode": 0,
+		"vacationDays": 50,
+		"monthlyHours": 116,
+		"breakTimer": 13,
+		"employeeScore": 0,
+		"location": "63526d4fd418931b6f5cd8b6",
+		"manager": "2",
+		"date": "2022-10-27T09:27:29.822Z",
+		"__v": 0,
+		"image": image3
+	},
+	{
+		"_id": "user4",
+		"name": "User4",
+		"id": "User4@web.de",
+		"email": "User4@web.de",
+		"password": "12345678",
+		"employeeType": 1,
+		"street": "default",
+		"houseNumber": 0,
+		"postalCode": 0,
+		"vacationDays": 50,
+		"monthlyHours": 116,
+		"breakTimer": 13,
+		"employeeScore": 0,
+		"location": "63526d4fd418931b6f5cd8b6",
+		"manager": "2",
+		"date": "2022-10-27T09:27:29.822Z",
+		"__v": 0,
+		"image": image4
+	},	
+]
