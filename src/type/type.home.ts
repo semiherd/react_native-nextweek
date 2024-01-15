@@ -1,15 +1,15 @@
 import { Absence, Swap, Blocker } from './type.request'
-import { ContainerStyles } from '../type/type.app'
 
 export type ActivityTabId= 'swap' | 'vacation' | 'event'
 
 export type ActivityTypeUnion= Absence | Swap | Blocker
 
 export type ActivityLayoutProps={
-	declineIcon: (onClickFn:() => void,styles:ContainerStyles) => React.JSX.Element
-	action: React.JSX.Element | null
-	content: React.JSX.Element | null
-	userAvatar: React.JSX.Element | null
+	w: number
+	declineIcon: React.ReactNode
+	content: React.JSX.Element
+	action: React.JSX.Element
+	userAvatar: React.ReactElement | null
 }
 
 export type ActivityTab={
@@ -17,7 +17,6 @@ export type ActivityTab={
 		id: ActivityTabId
 	}
 	state: boolean
-
 }
 
 

@@ -55,7 +55,7 @@ export const useShift = () => {
 			return []
 		}
 	}	
-
+ 
 	const readShift= async <T extends IdParam<ShiftType,'_id'>|IdParam<User,'_id'>>(id:T):Promise<Api_ReadShift['shifts']|null> => {
 		try{
 			const { url }= ApiList.shift.readShift
@@ -89,7 +89,6 @@ export const useShift = () => {
 	const updateShift= async <T extends Api_UpdateShift_Param>(id:T,type: UpdateShiftOptions):Promise<Api_UpdateShift> => {
 		try{
 			const { url }= ApiList.shift.updateShift
-			const param= id
 			const urlString= `${url}/${id}/${type}`		
 		
 			const response: Api_UpdateShift|null= await postApi<Api_UpdateShift,{}>(urlString,token)
@@ -113,6 +112,7 @@ export const useShift = () => {
 			return { deletedShift:null }
 		}
 	}
+	
 
 	return {
 		getUsers,
@@ -120,6 +120,6 @@ export const useShift = () => {
 		createShift,
 		deleteShift,
 		updateShift,
-		readPeopleInShift
+		readPeopleInShift,
 	}
 }

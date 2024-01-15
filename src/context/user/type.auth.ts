@@ -2,6 +2,7 @@ import { User,Manager,Admin } from './type.user'
 import { UserUpdateParam } from '../../type/type.user'
 import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 import { ApiResponseVals } from '../../type/type.api'
+import { SubType } from '../../type/type.app'
 
 export type Roles= 'Manager' | 'User'
 
@@ -35,6 +36,10 @@ export type AuthApi={
 	getVC: () => Promise<Api_AuthVC>
 	onPwUpdate: (code: Api_AuthPwUpdate_Param) => Promise<Api_AuthPwUpdate>
 	signOut: () => Promise<Api_AuthSignOut>
+	checkAuth: () => Promise<SubType<AuthState,'token'>|null>
+	getStorage: () => Promise<SubType<AuthState,'token'>|null>
+	setStorage: () => Promise<void>
+	clearStorage: () => void
 }
 
 type UpdateUser= {
@@ -74,7 +79,14 @@ type SignInManager= {
 	}
 }
 
-export type AuthReducer= SignOutUser | SignInUser | SignInManager | UpdateUser 
+type RestoreToken= {
+	type: typeof CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN
+	payload: {
+		token: string | null
+	}
+}
+
+export type AuthReducer= RestoreToken | SignOutUser | SignInUser | SignInManager | UpdateUser 
 
 // AUTH
 export type LoginBase={

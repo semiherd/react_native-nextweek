@@ -3,7 +3,6 @@ import { NoContent } from '../../../../app/error/index'
 import { Color } from '../../../../../asset/constant/Color'
 import { ContainerStyles } from '../../../../../type/type.app'
 import { TabItem } from '../../../../app/button/tab/type.tab'
-import { useRequest } from '../../../../../service/hook/UseRequest'
 import { Absence, Swap, Blocker } from '../../../../../type/type.request'
 import ActivityList  from './ActivityList'
 import { ActivityTabId } from '../../../../../type/type.home'
@@ -12,7 +11,6 @@ type ActivityTypeUnion= Absence | Swap | Blocker
 
 function TabContent<TVal extends ActivityTabId>({tabs}:{tabs:TabItem<TVal>[]}){
 	
-	const { fetchRequest }= useRequest()
 	const [active,setActive]=useState<TabItem<TVal>|null>(null)
 
 	const containerStyles:ContainerStyles={

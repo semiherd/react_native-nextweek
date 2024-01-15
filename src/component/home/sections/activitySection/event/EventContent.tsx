@@ -1,14 +1,14 @@
 import { Col } from '../../../../app/layout/Layout'
 import { Blocker } from '../../../../../type/type.request'
 
-const EventContent= (props:Blocker) => {
+const EventContent= (props:Blocker):React.ReactElement => {
 	
 	return (
-		<Col colNr={1} alignOption="flex-start">
+		<><Col colNr={1} alignOption="flex-start">
 			<>
 				
 			</>
-		</Col>
+		</Col></>
 	)
 }
 export default EventContent

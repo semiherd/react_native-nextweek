@@ -1,31 +1,61 @@
 import React, { useState, useEffect } from "react"
-import { ContainerStyles } from '../../../../type/type.app'
-import { useUser } from '../../../../service/hook/index'
+import { ActivityItem } from './tab/index'
+import { useUser,useRequest } from '../../../../service/hook/index'
 import { User } from "../../../../context/user/type.user"
 import { UserAvatar } from "../../../app/image/type.image"
 import { ActivityTypeUnion } from '../../../../type/type.home'
 import { isAbsence, isBlocker, isSwap } from "../../../../service/request/HandleActivity"
 import { Swap, Blocker, Absence } from '../../../../type/type.request'
+import { useProgressDispatch } from "../../../../context/progress/ProgressContext"
+import { ApiResponse, Api_UpdateSwapOffer } from "../../../../type/type.api"
+import { ContainerStyles } from "../../../../type/type.app"
+import { ActivityTabId } from '../../../../type/type.home'
 import AvatarImage from '../../../app/image/AvatarImage'
 import ActivityLayout from './ActivityLayout'
 import DeclineIcon from './tab/DeclineIcon'
+import { Dimensions } from 'react-native'
 
-function CardWithUser<T extends ActivityTypeUnion>({ Content, Action, data, styling}:
+const { width } = Dimensions.get('window')
+
+const CardWithUser= <T extends ActivityTypeUnion>(props:
 	{
-		Content: React.ComponentType<T>,
-		Action: React.ComponentType<T>,
-		data: T,
-		styling:{
-			containerWidth:ContainerStyles['containerWidth']
+		Action: React.JSX.Element
+		Content: React.JSX.Element
+		data: T
+		styling: ContainerStyles
+		active: ActivityTabId|null
+	}
+) => {
+	const { Action, Content, data } = props
+	const { fetchUser }= useUser()
+	const { updateSwap }= useRequest()
+	const { updateError }= useProgressDispatch()
+	
+	const [user,setUser]= useState<UserAvatar|null>(null)
+	const [removed,setRemoved]=useState<typeof props.data._id|null>(null)
+
+	async function onDecline(){
+		try{			
+			if(isSwap(props.data)){
+				const response:Api_UpdateSwapOffer|null= await updateSwap(props.data._id,'revoked')
+				if(response===ApiResponse.swapUpdate.success) {
+					setRemoved(props.data._id)
+				}
+			}else{
+				return null			
+			}
+		}catch(e){
+			updateError({
+				state:true,
+				error: 'error on CardWithUser-onDeclineFn component',
+				description: 'Activity-Decline-Fn-Error'
+			})
 		}
 	}
-){
-	const { fetchUser }= useUser()
-	const [user,setUser]= useState<UserAvatar|null>(null)
 	
 	const avatarStyling={
-		width: 50,
-		height: 50,
+		width: width * 0.18,
+		height: width * 0.18,
 	}
 	
 	async function getAvatar(){
@@ -66,17 +96,26 @@ function CardWithUser<T extends ActivityTypeUnion>({ Content, Action, data, styl
 		}
 	}
 
+	const componentWidth:number= 0.75
+	
 	useEffect(() => {
 		getAvatar()
 	},[data])
 
 	return (
-		<ActivityLayout 
-			declineIcon={(onDecline) => <DeclineIcon text="X" onClickFn={onDecline}/>}
-			userAvatar={user ?<AvatarImage data={user as UserAvatar} styling={avatarStyling} /> :null} 
-			content={<Content {...data} />}
-			action={<Action {...data} />}
-		/>
+		<>{removed=== data._id
+			? null
+			:	<ActivityItem key={`${ props.active}_${data._id}`} styles={ props.styling} >
+					<ActivityLayout
+						w={componentWidth}
+						declineIcon={<DeclineIcon text="X" onClickFn={onDecline}/>}
+						userAvatar={user ?<AvatarImage data={user} styling={avatarStyling} /> :null} 
+						content={Content}			
+						action={Action}			
+					/>
+				</ActivityItem>
+			}
+		</>
 	)
 }
 export default CardWithUser

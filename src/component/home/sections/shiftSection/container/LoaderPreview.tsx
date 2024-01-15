@@ -9,6 +9,7 @@ import { fontStyles } from '../../../../../asset/constant/FontStyles'
 import { UserButton } from '../../../../app/button/index'
 import ShiftContent from './ShiftContent'
 import AvatarItem from './AvatarItem'
+import { ShiftType } from '../../../../../type/type.shift'
 
 const AvatarPreview= () => {
 	const item= {
@@ -37,7 +38,8 @@ const ActionPreview= () => {
 	
 }
 const LoaderPreview= () => {
-	const item={
+
+	const item:ShiftType={
 		_id: '',
 		user: '...',
 		manager: '',
@@ -51,8 +53,6 @@ const LoaderPreview= () => {
 		shiftEnded: false,
 		date: '',
 		__v: 0,
-		started: '',
-		finished: '',
 	}
 
 	return (

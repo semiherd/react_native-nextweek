@@ -9,7 +9,7 @@ const AvatarItem= (props:UserAvatar) => {
 		width: 50,
 		height: 50,
 		borderColor: Color.white, 
-		borderWidth: 0.5, 
+		borderWidth: 1, 
 		borderRadius: 50
 	}
 

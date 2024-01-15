@@ -9,7 +9,6 @@ import { mock_swapRoster, mock_deleteRoster, mock_readRosterShift } from '../../
 import { useUserState } from '../../context/user/UserContext'
 import { useFetchApi } from '../hook/UseFetchApi'
 import { ApiList } from '../../asset/constant/Api'
-import { ShiftType } from '../../type/type.shift'
 
 const { roster }= ApiList
 

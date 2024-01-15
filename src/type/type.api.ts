@@ -13,6 +13,10 @@ const Api_Response= {
 } 
 
 export const ApiResponse= {
+	swapUpdate:{
+		fail: 'Swap-Update-Failed',
+		success: 'Swap-Update-Completed'
+	},
 	vc:{
 		fail: 'Verification Code Request Failed',
 		success: 'Verification Code Request Successful'

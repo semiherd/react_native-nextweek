@@ -1,54 +1,49 @@
 import React from "react"
 import { Dimensions,View } from "react-native"
-import {ActivityLayoutProps} from '../../../../type/type.home'
-import {Col,Row} from '../../../app/layout/Layout'
-import {ContainerStyles} from '../../../../type/type.app'
+import { ActivityLayoutProps } from '../../../../type/type.home'
+import { Col, Row } from '../../../app/layout/Layout'
+import { ActivityTypeUnion } from '../../../../type/type.home'
 
-const {height}= Dimensions.get('window')
+const { height }= Dimensions.get('window')
 
-const ActivityLayout = ({action,userAvatar,content,declineIcon}:ActivityLayoutProps) => {
-	
-	const onDecline= () => console.log('onclick decline')
-	const rowWidth:number= 0.75
-	const declineStyle:({containerWidth: ContainerStyles['containerWidth']})= {
-		containerWidth: rowWidth,
-	}
-	
+const ActivityLayout= <T extends ActivityTypeUnion>(props : ActivityLayoutProps) => {
+
+	const { action, content, userAvatar, declineIcon, w }= props
+
 	return (
 		<>	
 			<View>
-				<View style={{
-					position: 'absolute',top: '-40%',left: '93%',
-				}}>
-					{declineIcon(onDecline,declineStyle)}
-				</View>
-				<View style={{ alignSelf: 'center',transform: [{translateY: height * 0.02}]}}>
-				<Row rowWidth={rowWidth} alignOption="center">
+				
+				<Row rowWidth={w} alignOption="center">
 					<>
-						{userAvatar 
-							?	<Col colNr={1} alignOption="center">
-									{userAvatar}
+					{userAvatar 
+							?	<Col colNr={2} alignOption="center">
+									<>{userAvatar}</>
 								</Col>
 							:	null
 						}
 						{content 
 							?	<View>
-								<Col colNr={1} alignOption="center">
+								<Col colNr={2} alignOption="center">
 									{content}
 								</Col>
 							</View>
 							: null
 						}
 						{action 
-							?	<Col colNr={1} alignOption="center">
+							?	<Col colNr={1} alignOption="flex-end">
 									{action}
 								</Col>
-							: null }
+							: null 
+						}
+						<View style={{
+							position: 'absolute',top: '-15%',left: '100%',
+						}}>
+							{declineIcon}
+						</View>
 					</>
 				</Row>
-				</View>
-			</View>
-			
+				</View>	
 		</>
 
 	)

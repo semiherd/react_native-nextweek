@@ -1,9 +1,9 @@
-import {View} from 'react-native'
-import {UserButtonType} from '../../../../../type/type.app'
-import {UserButton} from '../../../../app/button/index'
-import {ActivityTab } from '../../../../type/type.home'
+import { View } from 'react-native'
+import { UserButtonType } from '../../../../../type/type.app'
+import { UserButton } from '../../../../app/button/index'
+import { ActivityTab } from '../../../../../type/type.home'
 import { Color } from '../../../../../asset/constant/Color'
-import {styles} from '../style/TabButton'
+import { styles } from '../style/TabButton'
 
 const TabButton= (
 	props:{

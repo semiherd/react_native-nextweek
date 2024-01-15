@@ -9,7 +9,11 @@ export const styles= StyleSheet.create({
 		lineHeight: 12,
 		color: Color.black76,
 		textAlign: 'center',
-	},
+		marginTop: '10%',
+		flexWrap: 'wrap',
+		width: '100%',
+		alignSelf: 'center',
+	}
 })
 
 

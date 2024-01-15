@@ -3,7 +3,7 @@ import {AvatarItem, ImageCss} from './type.image'
 import ImageItem from './ImageItem'
 import AvatarDef from './AvatarDef'
 
-const AvatarImage= (props: AvatarItem) => {
+const AvatarImage= (props: AvatarItem):React.ReactElement => {
 	
 	const css={
 		width: props.styling.width,

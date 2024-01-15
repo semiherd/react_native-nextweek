@@ -10,7 +10,7 @@ import TimeItem from '../../../TimeItem'
 
 const TimeComponent= withShiftLabel(TimeItem)
 
-const SwapContent= (props:Swap) => {
+const SwapContent= (props:Swap):React.JSX.Element => {
 	const { readShift }= useShift()
 	const { fetchUser }= useUser()
 	const {_id, userRequesting,userOffering, shiftRequested, shiftOffered }=props
@@ -58,7 +58,7 @@ const SwapContent= (props:Swap) => {
 				? <UserTitle text={[user.offering.name,fontStyles.Home.Activity.swap.type.text]} styling={{name:fontStyles.Home.Activity.swap.name.font.style,type:fontStyles.Home.Activity.swap.type.font.style}} />
 				: null
 			}
-			{shift.requested
+			{shift?.requested
 				? <TimeComponent type="shift" data={{starting: shift?.requested?.starting,ending:shift?.requested?.ending}} font={fontStyles.Home.Activity.swap.time.font.style} />
 				: null
 			}

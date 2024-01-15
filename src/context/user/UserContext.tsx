@@ -1,7 +1,7 @@
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 import { SignUpResponse,SignInParam, SignInResponse, Roles, AuthState, AuthApi, LoginBase } from './type.auth'
 import { User } from './type.user'
-import { ErrorType } from '../../type/type.app'
+import { SubType } from '../../type/type.app'
 import { userReducer } from './UserReducer'
 import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 import { useUser, useFetchApi } from '../../service/hook/index'
@@ -33,7 +33,10 @@ import { ApiList } from '../../asset/constant/Api'
 const UserStateCtx= React.createContext<AuthState>({} as AuthState)
 const UserDispatchCtx= React.createContext<AuthApi>({} as AuthApi)
 
-const { auth } = ApiList
+type TokenStorageType={
+  key: 'accessToken'
+  value: string
+}
 
 function UserProvider({ children }:{children: React.ReactNode}) {
     const { getApi, postApi }= useFetchApi()
@@ -51,30 +54,75 @@ function UserProvider({ children }:{children: React.ReactNode}) {
 
     const [state, dispatch] = React.useReducer(userReducer, initialState);
     const [loading,setLoading]= React.useState<boolean>(true)
-    const [error,setError]= React.useState<ErrorType>({} as ErrorType)
-
-    // get auth-state from the storage
-   /*
-    async function loadStorageData (): Promise<void> {
-      try {
-        const authDataSerialized = await AsyncStorage.getItem('@AuthData');
-        if (authDataSerialized) {
-         
-          const _authData: AuthData = JSON.parse(authDataSerialized);
-          dispatch({ 
-            id: CONTEXT_ACTIONS.AUTH.GET_STORAGE,
-            payload: _authData
-          })
-        }
-      } catch (error) {
-        setError({source:'loadStorage',error})
-      } finally {
-        setLoading(false)
+    
+    async function handleStorage(){
+      try{
+        console.log('handleStorage called',state)
+        if(state.token)
+          await api.setStorage({key:'accessToken', value: state?.token })
+      }catch(e){
+        console.log(e)
       }
     }
-    */
+
+    useEffect(() => {
+      handleStorage()
+    },[state.token])
+
     const api = useMemo(() => {	
-      
+
+      async function clearStorage(){
+        try{
+          await AsyncStorage.clear()
+        }catch(e){
+          console.log(e)
+        }
+      }
+
+      async function checkAuth ():Promise<SubType<AuthState,'token'>|null>{
+        try {
+          const response = await getStorage()
+          if(response!==null){
+            const { token } = response
+            dispatch({ 
+              type: CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN,
+              payload: {
+                token
+              }
+            })
+          }
+          return response
+        } catch (error) {
+          return null
+        }
+      }
+
+      async function setStorage({key,value}:TokenStorageType):Promise<void>{
+        try{
+          console.log('setStorage called')
+          const val:string= JSON.stringify(value)
+          console.log('setStorage value',val)
+          const response= await AsyncStorage.setItem(key, val)
+          console.log('AsyncStorage response:',response)
+        }catch(e){
+          console.log(e)
+        }
+      }
+
+      async function getStorage():Promise<SubType<AuthState,'token'>|null>{
+        try{
+          console.log('getStorage called')
+          const authDataSerialized = await AsyncStorage.getItem('@AuthData')
+          if (authDataSerialized) {      
+            return await JSON.parse(authDataSerialized);
+          }
+          return  null
+        }catch(e){
+          console.log(e)
+          return null        
+        }
+      }
+
       async function handleSignIn({role,email,password}:SignInParam) : Promise<ApiResponseVals> {
         try{
           const apiResponse= await signIn({role,email,password})
@@ -88,8 +136,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
       }
 
       async function handleSignInDispatch(data:SignInResponse):Promise<boolean>{
-        try{
-          
+        try{         
           const param= 
             data===null 
               ? null
@@ -137,8 +184,9 @@ function UserProvider({ children }:{children: React.ReactNode}) {
             //return await postApi<Api_AuthManagerSignIn,LoginBase>(auth.loginManager.url,token,data)		
           }
           return null
-        } catch (error) {
-          throw new Error(error.message);
+        } catch (e) {
+          console.log(e)
+          return null
         }
       }
 
@@ -239,7 +287,8 @@ function UserProvider({ children }:{children: React.ReactNode}) {
           const response= await postApi<Api_AuthSignOut,Api_AuthSignOut_Param>(urlString,token,{id})		
           if(response){
             return ApiResponse.pwUpdate.success
-          }*/
+          }
+          */
           dispatch({
             type: CONTEXT_ACTIONS.AUTH.SIGNOUT,
             payload: { role:null, user: null, manager: null, token: null, refreshToken: null }
@@ -260,7 +309,11 @@ function UserProvider({ children }:{children: React.ReactNode}) {
         signUp,
         updateUser,
         verifyCode,
-        getVC
+        getVC,
+        setStorage,
+        getStorage,
+        checkAuth,
+        clearStorage
       }
     },[])
 

@@ -189,6 +189,7 @@ export const ApiList:typeApis= {
 		},
 		shiftSwapOfferUpdate:{
 			url: `${baseUrl}/api/roster/shiftSwapOffer/update/`,
+			urlParam: `/id/revoke`
 		},
 		readBlocker:{
 			url: `${baseUrl}/api/roster/preferredShift/read`,

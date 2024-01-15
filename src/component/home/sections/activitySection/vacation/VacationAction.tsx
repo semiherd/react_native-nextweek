@@ -22,8 +22,8 @@ const VacationAction= (props:Absence) => {
 	}
 
 	return (
-		<Col colNr={0} alignOption="center">
-			<>
+		<>
+			<Col colNr={0} alignOption="center">
 				<UserButton<AcceptParamType>
 					onClickParam= {{id:props._id,data:{absence:props}}}
 					buttontext={label}
@@ -31,8 +31,8 @@ const VacationAction= (props:Absence) => {
 					useBorder={true}
 					fontStyles={{fontSize:12,fontWeight:'500'}}		
 				/>
-			</>
-		</Col>
+			</Col>
+		</>
 	)
 }
 export default VacationAction

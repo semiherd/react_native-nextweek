@@ -30,6 +30,11 @@ export const userReducer = (prevState: AuthState, action: AuthReducer):AuthState
 				token: null,
 				refreshToken: null
 			}
+		case CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN:
+			return {
+				...prevState,
+				token: action.payload.token,
+			}
 		case CONTEXT_ACTIONS.USER.UPDATE:
 			
 			return {

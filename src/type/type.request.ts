@@ -39,7 +39,7 @@ export interface RequestItemType{
 	}
 }
 
-export interface Swap extends SwapState,ManagerBase,Version,RequestUser{
+export type Swap = SwapState & ManagerBase & Version & RequestUser &{
 	"_id": string
 	"date": string //Date"2022-11-11T08:41:19.098Z"
 	"shiftRequested": string	

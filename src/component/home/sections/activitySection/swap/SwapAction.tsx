@@ -4,7 +4,7 @@ import { UserButton } from '../../../../app/button/index'
 import { useRequest } from '../../../../../service/hook/UseRequest'
 import { Color } from '../../../../../asset/constant/Color'
 
-const SwapAction= (props:Swap) => {
+const SwapAction= (props:Swap):React.JSX.Element => {
 	const { updateSwap } = useRequest()
 	const [statusLabel,setLabel]= useState<'Accept'|'Accepted'|'Denied'|'Revoked'>('Accept')
 	
