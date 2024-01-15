@@ -3,6 +3,7 @@ You can change useMocked to false in order to see login screens. File path is sr
 <br>
 <br>
 Missing parts :<br><br>
-Home Tab -> Activity Section -> Vacation and Event tabs<br><br>
+Home Tab -> Activity Section -> Vacation and Event tab design is not yet available<br><br>
+Home Tab -> Your Shift Section -> View All screen design is not yet available<br><br>
 Home Tab -> Updates By Manager api's for this section is not available yet. We can integrate it when it is ready.<br><br>
 Roster -> Overview Tab -> which api's should be called on Swap and Delete icon click?<br><br>
