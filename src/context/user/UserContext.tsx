@@ -43,13 +43,13 @@ function UserProvider({ children }:{children: React.ReactNode}) {
     const { updateUserAsUser }= useUser()
 
     const initialState:AuthState= {
-      useMocked: true,
+      useMocked: false, //false to use static user data
       role: null, // 'User' | 'Manager'
-      token: 'test', // string
+      token: 'test', //'test', // string  --make null to test login screen
       refreshToken: 'test', // string
       loading: true,
-      user: mocked_User,  // mockedUser
-      manager: null //mocked_Manager  // mockedManager
+      user: null, //mocked_User, 
+      manager: null //mocked_Manager
     }
 
     const [state, dispatch] = React.useReducer(userReducer, initialState);

@@ -35,8 +35,7 @@ export const userReducer = (prevState: AuthState, action: AuthReducer):AuthState
 				...prevState,
 				token: action.payload.token,
 			}
-		case CONTEXT_ACTIONS.USER.UPDATE:
-			
+		case CONTEXT_ACTIONS.USER.UPDATE:		
 			return {
 				...prevState,
 				user: {

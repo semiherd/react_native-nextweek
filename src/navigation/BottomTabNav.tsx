@@ -10,15 +10,16 @@ import {
 
 import { BottomTabList } from '../type/type.nav'
 import { capitalizeFirstCh } from '../service/app/index'
+import { useUserState } from '../context/user/UserContext';
 
 const BottomTab = createBottomTabNavigator();
 
 const { width,height}= Dimensions.get('window')
 
 export default function BottomTabNav () {  
-    const userData = {
-        id: 'testuser'
-    }
+    const { user,manager} = useUserState()
+    const userData= manager ?manager :user
+
     const bottomTabHiddenScreens:string[]=['Chatroom']
     
     const { HOME,PROFILE,MESSAGE,ROSTER }= BOTTOMTABS

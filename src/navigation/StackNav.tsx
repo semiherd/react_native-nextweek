@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react"
+import React,{ useEffect } from "react"
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StackParams } from '../type/type.nav'
 import BottomTabNav from './BottomTabNav'
@@ -7,9 +7,9 @@ import Splash from '../screen/splash/Splash'
 import { useUserState, useUserDispatch } from '../context/user/UserContext'
 
 const StackNav = () => {
-	const state= useUserState()
+	const { token, user, manager }= useUserState()
 	const { setStorage,getStorage }= useUserDispatch()
-
+	
 	async function handleStorageData(){
 		try{
 			const data= await getStorage()
@@ -26,7 +26,10 @@ const StackNav = () => {
 	const Stack = createNativeStackNavigator<StackParams>();
    	return (
 	 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-				<Stack.Screen name= "MAIN" component= {BottomTabNav} /> 
+				{token===null
+					? <Stack.Screen name="AUTH" component={AuthNav} />
+					: <Stack.Screen name= "MAIN" component= {BottomTabNav} /> 
+				}
     	</Stack.Navigator>
   	)
 }

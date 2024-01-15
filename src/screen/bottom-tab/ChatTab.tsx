@@ -4,7 +4,7 @@ import { Color } from "../../asset/constant/Color"
 import { capitalizeFirstCh } from '../../service/app/index'
 import { fontStyles } from '../../asset/constant/FontStyles'
 import {  ChatStackList, StackGenericList } from '../../type/type.nav'
-import { RouteType, RoomRouteParams } from '../../component/message/type/type.message'
+import { RouteType } from '../../component/message/type/type.message'
 import Chatroom from '../../component/message/Chatroom'
 import RecentMessages from '../../component/message/index'
 import { RouteProp } from "@react-navigation/core";
