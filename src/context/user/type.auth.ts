@@ -3,6 +3,7 @@ import { UserUpdateParam } from '../../type/type.user'
 import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 import { ApiResponseVals } from '../../type/type.api'
 import { SubType } from '../../type/type.app'
+import { STORAGE_TYPE } from 'react-native-keychain'
 
 export type Roles= 'Manager' | 'User'
 
@@ -16,12 +17,18 @@ type ManagerObj={
 export type AuthState=  {
 	useMocked: boolean
 	token: string | null
+	tokenValid: number
 	role: null | 'User' | 'Manager'
 	loading: boolean
 	user: User | null
 	manager: Manager | null
 	refreshToken: string | null
 }
+export type TokenStorageType={
+  key: 'accessToken'
+  value: string
+}
+export type StorageType= 'accessToken'
 
 export type SignInParam= LoginBase & { role:Roles }
 
@@ -37,9 +44,9 @@ export type AuthApi={
 	onPwUpdate: (code: Api_AuthPwUpdate_Param) => Promise<Api_AuthPwUpdate>
 	signOut: () => Promise<Api_AuthSignOut>
 	checkAuth: () => Promise<SubType<AuthState,'token'>|null>
-	getStorage: () => Promise<SubType<AuthState,'token'>|null>
-	setStorage: () => Promise<void>
-	clearStorage: () => void
+	getStorage: (id: StorageType) => Promise<{ [id]: string, time: Date }|false>
+	setStorage: ({key,value}:TokenStorageType) => Promise<void>
+	clearStorage: (id:StorageType) => void
 }
 
 type UpdateUser= {

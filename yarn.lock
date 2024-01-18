@@ -6067,6 +6067,11 @@ react-native-indicators@^0.17.0:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-keychain@^8.1.2:
+  version "8.1.2"
+  resolved "https://registry.npmjs.org/react-native-keychain/-/react-native-keychain-8.1.2.tgz"
+  integrity sha512-bhHEui+yMp3Us41NMoRGtnWEJiBE0g8tw5VFpq4mpmXAx6XJYahuM6K3WN5CsUeUl83hYysSL9oFZNKSTPSvYw==
+
 react-native-permissions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-4.0.2.tgz"

@@ -8,12 +8,20 @@ import { useUserState, useUserDispatch } from '../context/user/UserContext'
 
 const StackNav = () => {
 	const { token, user, manager }= useUserState()
-	const { setStorage,getStorage }= useUserDispatch()
+	const { getStorage }= useUserDispatch()
 	
 	async function handleStorageData(){
 		try{
-			const data= await getStorage()
-			console.log('storage data:',data)	
+			const data:{accessToken: string,time: Date}|false= await getStorage('accessToken')
+			console.log('storage data:',data,new Date())
+			const refreshRange:number= 1000
+			if(data!==false){
+				const refreshRequest:boolean= new Date().getTime() - new Date(data.time).getTime()>refreshRange ?true :false
+				if(refreshRequest){
+					console.log('refreshToken api to be called')
+					//refreshTokenApi()
+				}
+			}
 		}catch(e){
 			console.log(e)
 		}

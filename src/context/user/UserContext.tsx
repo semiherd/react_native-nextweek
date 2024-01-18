@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react"
-import { SignUpResponse,SignInParam, SignInResponse, Roles, AuthState, AuthApi, LoginBase } from './type.auth'
+import { SignUpResponse,SignInParam, SignInResponse, Roles, AuthState, AuthApi, LoginBase, StorageType, TokenStorageType } from './type.auth'
 import { User } from './type.user'
 import { SubType } from '../../type/type.app'
 import { userReducer } from './UserReducer'
@@ -28,15 +28,10 @@ import {
 import { 
   mocked_User, mocked_Manager, 
 } from '../../__mock__/MockedAuthUser'
-import { ApiList } from '../../asset/constant/Api'
+import * as Keychain from 'react-native-keychain'
 
 const UserStateCtx= React.createContext<AuthState>({} as AuthState)
 const UserDispatchCtx= React.createContext<AuthApi>({} as AuthApi)
-
-type TokenStorageType={
-  key: 'accessToken'
-  value: string
-}
 
 function UserProvider({ children }:{children: React.ReactNode}) {
     const { getApi, postApi }= useFetchApi()
@@ -45,8 +40,9 @@ function UserProvider({ children }:{children: React.ReactNode}) {
     const initialState:AuthState= {
       useMocked: false, //false to use static user data
       role: null, // 'User' | 'Manager'
-      token: 'test', //'test', // string  --make null to test login screen
-      refreshToken: 'test', // string
+      tokenValid: 1000*60*60, // one-hour-validity
+      token: null, //'test', // string  --make null to test login screen
+      refreshToken: null, // string
       loading: true,
       user: null, //mocked_User, 
       manager: null //mocked_Manager
@@ -55,71 +51,54 @@ function UserProvider({ children }:{children: React.ReactNode}) {
     const [state, dispatch] = React.useReducer(userReducer, initialState);
     const [loading,setLoading]= React.useState<boolean>(true)
     
-    async function handleStorage(){
-      try{
-        console.log('handleStorage called',state)
-        if(state.token)
-          await api.setStorage({key:'accessToken', value: state?.token })
-      }catch(e){
-        console.log(e)
-      }
-    }
-
-    useEffect(() => {
-      handleStorage()
-    },[state.token])
 
     const api = useMemo(() => {	
 
-      async function clearStorage(){
-        try{
-          await AsyncStorage.clear()
-        }catch(e){
-          console.log(e)
-        }
-      }
-
-      async function checkAuth ():Promise<SubType<AuthState,'token'>|null>{
+      async function checkAuth () : Promise<{ accessToken: string } | false>{
         try {
-          const response = await getStorage()
-          if(response!==null){
-            const { token } = response
+          const response:{ accessToken: string } | false = await getStorage('accessToken')
+          if(response!==false){
+            const { accessToken } = response
             dispatch({ 
               type: CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN,
               payload: {
-                token
+                token: accessToken
               }
             })
           }
           return response
         } catch (error) {
-          return null
+          return false
         }
       }
-
-      async function setStorage({key,value}:TokenStorageType):Promise<void>{
+      
+      async function clearStorage(key:StorageType){
+        return await Keychain.resetGenericPassword({ service: key })
+      }
+      
+      async function setStorage({key,value}:TokenStorageType):Promise<false | Keychain.Result>{
         try{
-          console.log('setStorage called')
-          const val:string= JSON.stringify(value)
-          console.log('setStorage value',val)
-          const response= await AsyncStorage.setItem(key, val)
-          console.log('AsyncStorage response:',response)
+          return await Keychain.setInternetCredentials(key,key,JSON.stringify({value,time: new Date()}))
         }catch(e){
-          console.log(e)
+          return false
         }
       }
 
-      async function getStorage():Promise<SubType<AuthState,'token'>|null>{
+      async function getStorage(id:StorageType):Promise<{ [id]: string, time: Date } | false>{
         try{
-          console.log('getStorage called')
-          const authDataSerialized = await AsyncStorage.getItem('@AuthData')
-          if (authDataSerialized) {      
-            return await JSON.parse(authDataSerialized);
+          const result = await Keychain.getInternetCredentials(id)
+          console.log('keychain response:',result)
+          const date= new Date()
+          if(result) {
+            return {
+              [id]: result.password,
+              time: date
+            }
           }
-          return  null
+          return false
         }catch(e){
           console.log(e)
-          return null        
+          return false        
         }
       }
 
@@ -153,6 +132,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
                   : null
           if(param!==null){
             dispatch(param)
+            if(data!==null) setStorage({key:'accessToken',value: data.token})
             return true
           }
           return false     
@@ -170,16 +150,16 @@ function UserProvider({ children }:{children: React.ReactNode}) {
           if(role==='User'){
             return {
               user: mocked_User,
-              token: '123',
-              refresh_token: '567'
+              token: 'mockedToken',
+              refresh_token: 'mockedRefreshToken'
             }
             //return await postApi<Api_AuthUserSignIn,LoginBase>(auth.loginUser.url,token,data)		
           }
           if(role==='Manager'){
             return {
               manager: mocked_Manager,
-              token: '123',
-              refresh_token: '567'
+              token: '1mockedToken23',
+              refresh_token: 'mockedRefreshToken'
             }
             //return await postApi<Api_AuthManagerSignIn,LoginBase>(auth.loginManager.url,token,data)		
           }
@@ -293,6 +273,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
             type: CONTEXT_ACTIONS.AUTH.SIGNOUT,
             payload: { role:null, user: null, manager: null, token: null, refreshToken: null }
           })
+          await clearStorage('accessToken')
           return ApiResponse.signOut.success
         }catch(e){
           console.log(e)
