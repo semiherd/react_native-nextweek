@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo } from "react"
 import { SignUpResponse,SignInParam, SignInResponse, Roles, AuthState, AuthApi, LoginBase, StorageType, TokenStorageType } from './type.auth'
-import { User } from './type.user'
-import { SubType } from '../../type/type.app'
+import { User,Manager } from './type.user'
 import { userReducer } from './UserReducer'
 import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 import { useUser, useFetchApi } from '../../service/hook/index'
 import { UserUpdateParam } from '../../type/type.user'
-import AsyncStorage from '@react-native-community/async-storage'
 import { ApiResponse, ApiResponseVals } from "../../type/type.api"
 import { 
   Api_AuthVC,
@@ -28,17 +26,20 @@ import {
 import { 
   mocked_User, mocked_Manager, 
 } from '../../__mock__/MockedAuthUser'
-import * as Keychain from 'react-native-keychain'
+import { useAxiosPriv } from '../../service/hook/UseAxiosPriv'
+import { ApiList } from '../../asset/constant/Api'
 
 const UserStateCtx= React.createContext<AuthState>({} as AuthState)
 const UserDispatchCtx= React.createContext<AuthApi>({} as AuthApi)
 
 function UserProvider({ children }:{children: React.ReactNode}) {
+    
     const { getApi, postApi }= useFetchApi()
     const { updateUserAsUser }= useUser()
+    const axiosPriv = useAxiosPriv()
 
     const initialState:AuthState= {
-      useMocked: false, //false to use static user data
+      useMocked: true, //false to use static user data
       role: null, // 'User' | 'Manager'
       tokenValid: 1000*60*60, // one-hour-validity
       token: null, //'test', // string  --make null to test login screen
@@ -51,54 +52,20 @@ function UserProvider({ children }:{children: React.ReactNode}) {
     const [state, dispatch] = React.useReducer(userReducer, initialState);
     const [loading,setLoading]= React.useState<boolean>(true)
     
-
     const api = useMemo(() => {	
-
-      async function checkAuth () : Promise<{ accessToken: string } | false>{
-        try {
-          const response:{ accessToken: string } | false = await getStorage('accessToken')
-          if(response!==false){
-            const { accessToken } = response
-            dispatch({ 
-              type: CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN,
-              payload: {
-                token: accessToken
-              }
-            })
-          }
-          return response
-        } catch (error) {
-          return false
-        }
-      }
       
-      async function clearStorage(key:StorageType){
-        return await Keychain.resetGenericPassword({ service: key })
-      }
-      
-      async function setStorage({key,value}:TokenStorageType):Promise<false | Keychain.Result>{
+      async function refreshToken(t:string) : Promise<ApiResponseVals> {
         try{
-          return await Keychain.setInternetCredentials(key,key,JSON.stringify({value,time: new Date()}))
-        }catch(e){
-          return false
-        }
-      }
-
-      async function getStorage(id:StorageType):Promise<{ [id]: string, time: Date } | false>{
-        try{
-          const result = await Keychain.getInternetCredentials(id)
-          console.log('keychain response:',result)
-          const date= new Date()
-          if(result) {
-            return {
-              [id]: result.password,
-              time: date
+          dispatch({ 
+            type: CONTEXT_ACTIONS.AUTH.RESTORE_TOKEN,
+            payload: {
+              token: t
             }
-          }
-          return false
+          })
+          return ApiResponse.token.success
         }catch(e){
-          console.log(e)
-          return false        
+          console.log('auth error',e)
+          return ApiResponse.token.fail
         }
       }
 
@@ -132,7 +99,6 @@ function UserProvider({ children }:{children: React.ReactNode}) {
                   : null
           if(param!==null){
             dispatch(param)
-            if(data!==null) setStorage({key:'accessToken',value: data.token})
             return true
           }
           return false     
@@ -146,22 +112,32 @@ function UserProvider({ children }:{children: React.ReactNode}) {
           const data:LoginBase= {
             email,password
           }
-          const token=null 
+          
           if(role==='User'){
-            return {
-              user: mocked_User,
-              token: 'mockedToken',
-              refresh_token: 'mockedRefreshToken'
+            if(state.useMocked){
+              return {
+                user: mocked_User,
+                token: 'mockedToken',
+                refresh_token: 'mockedRefreshToken'
+              }
             }
-            //return await postApi<Api_AuthUserSignIn,LoginBase>(auth.loginUser.url,token,data)		
+            return await axiosPriv.post(
+              ApiList.auth.loginUser.url,
+              JSON.stringify(data)
+            )    
           }
           if(role==='Manager'){
-            return {
-              manager: mocked_Manager,
-              token: '1mockedToken23',
-              refresh_token: 'mockedRefreshToken'
+            if(state.useMocked){
+              return {
+                manager: mocked_Manager,
+                token: '1mockedToken23',
+                refresh_token: 'mockedRefreshToken'
+              }
             }
-            //return await postApi<Api_AuthManagerSignIn,LoginBase>(auth.loginManager.url,token,data)		
+            return await axiosPriv.post(
+              ApiList.auth.loginManager.url,
+              JSON.stringify(data)
+            )   
           }
           return null
         } catch (e) {
@@ -175,17 +151,26 @@ function UserProvider({ children }:{children: React.ReactNode}) {
           const data:Api_AuthUserSignUp_Param= {
             name,role,email,password
           }
-          const token=null 
           if(role==='User'){
-            return {
-              user: 'newUserId'
+            if(state.useMocked){
+              return {
+                user: 'newUserId'
+              }
             }
-            //return await postApi<Api_AuthUserSignUp,LoginBase>(auth.registerUser.url,token,data)		
+            return await axiosPriv.post(
+              ApiList.auth.registerUser.url,
+              JSON.stringify(data)
+            ) 
           }else if(role==='Manager'){
-            return {
-              manager: 'newManId'
+            if(state.useMocked){
+              return {
+                manager: 'newManId'
+              }
             }
-            //return await postApi<Api_AuthManagerSignUp,LoginBase>(auth.registerManager.url,token,data)		
+            return await axiosPriv.post(
+              ApiList.auth.registerManager.url,
+              JSON.stringify(data)
+            ) 
           }else return null
           
         } catch (error) {
@@ -195,7 +180,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
       
       async function updateUser(id:User['_id'],param: { type: UserUpdateParam, value: string}):Promise<ApiResponseVals>{
         try{
-          //CALL UPDATE USER API
+          
           const response= await updateUserAsUser<typeof param.type>(id,param)
           if(response.state= ApiResponse.update.success){
             dispatch({ 
@@ -213,13 +198,15 @@ function UserProvider({ children }:{children: React.ReactNode}) {
 
       async function verifyCode(code:Api_AuthVerify_Param):Promise<Api_AuthVerify>{
         try{
-          const token=null 
-          /*
-          const response= await postApi<Api_AuthVerify,LoginBase>(auth.verify.url,token,code)		
+          if(state.useMocked) return ApiResponse.verify.success      
+          const response= await axiosPriv.post(
+              ApiList.auth.verify.url,
+              JSON.stringify(code)
+            ) 
           if(response){
             return ApiResponse.verify.success
-          }*/
-          return ApiResponse.verify.success
+          }
+          return ApiResponse.verify.fail
         }catch(e){
           console.log(e)
           return ApiResponse.verify.fail
@@ -228,12 +215,15 @@ function UserProvider({ children }:{children: React.ReactNode}) {
 
       async function onPwUpdate(pw:Api_AuthPwUpdate_Param):Promise<Api_AuthPwUpdate>{
         try{
-          /*
-          const token=null 
-          const response= await postApi<Api_AuthPwUpdate,Api_AuthPwUpdate_Param>(auth.pwUpdate.url,token,pw)		
+          if(state.useMocked) return ApiResponse.pwUpdate.success 
+          
+          const response= await axiosPriv.post(
+              ApiList.auth.pwUpdate.url,
+              JSON.stringify(pw)
+            ) 
           if(response){
             return ApiResponse.pwUpdate.success
-          }*/
+          }
           return ApiResponse.pwUpdate.success
         }catch(e){
           console.log(e)
@@ -243,16 +233,13 @@ function UserProvider({ children }:{children: React.ReactNode}) {
 
       async function getVC():Promise<ApiResponseVals>{
         try{
-          /*
-          const token=null 
-          const data= null 
-          const urlString= `${auth.getVC.url}`
-          const response:Api_AuthVC|null= await postApi<Api_AuthVC,Api_AuthVC_Param>(urlString,token,data)		
+          if(state.useMocked) return ApiResponse.pwUpdate.success 
+          const response:Api_AuthVC|null= await axiosPriv.post(
+            ApiList.auth.getVC.url
+          )    
           if(response===null)
             return ApiResponse.vc.fail
           else return ApiResponse.vc.success
-          */      
-          return ApiResponse.vc.success
         }catch(e){
           console.log(e)
           return ApiResponse.vc.fail
@@ -261,19 +248,25 @@ function UserProvider({ children }:{children: React.ReactNode}) {
 
       async function signOut():Promise<Api_AuthSignOut>{
         try{
-          const token=null 
-          /*
-          const urlString= `${auth.signOut.url}`
-          const response= await postApi<Api_AuthSignOut,Api_AuthSignOut_Param>(urlString,token,{id})		
+          if(state.useMocked) return ApiResponse.signOut.success 
+          const idString:User['_id']| Manager['_id']|null= state.manager===null 
+              ?state.user===null 
+                ? null 
+                : state.user._id
+              :state.manager._id
+
+          const response:Api_AuthSignOut= await axiosPriv.post(
+            ApiList.auth.signOut.url,
+            JSON.stringify(idString)
+          ) 
           if(response){
-            return ApiResponse.pwUpdate.success
+            return ApiResponse.signOut.success
           }
-          */
           dispatch({
             type: CONTEXT_ACTIONS.AUTH.SIGNOUT,
             payload: { role:null, user: null, manager: null, token: null, refreshToken: null }
           })
-          await clearStorage('accessToken')
+          
           return ApiResponse.signOut.success
         }catch(e){
           console.log(e)
@@ -282,6 +275,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
       }
 
       return { 
+        refreshToken,
         handleSignIn,
         handleSignInDispatch,
         onPwUpdate,
@@ -290,11 +284,7 @@ function UserProvider({ children }:{children: React.ReactNode}) {
         signUp,
         updateUser,
         verifyCode,
-        getVC,
-        setStorage,
-        getStorage,
-        checkAuth,
-        clearStorage
+        getVC
       }
     },[])
 

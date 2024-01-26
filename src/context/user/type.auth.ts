@@ -31,22 +31,20 @@ export type TokenStorageType={
 export type StorageType= 'accessToken'
 
 export type SignInParam= LoginBase & { role:Roles }
+export type SignUpParam= SignInParam & { name:string }
 
 
 export type AuthApi={
 	handleSignInDispatch: (data:SignInResponse) => Promise<boolean>
 	handleSignIn: ({role,email,password}:SignInParam) => Promise<ApiResponseVals>
 	signIn: ({role,email,password}:SignInParam) => Promise<SignInResponse>
-	signUp:({role,email,password}:SignInParam) => Promise<SignUpResponse>
+	signUp:({role,name,email,password}:SignUpParam) => Promise<SignUpResponse>
 	updateUser: ( id: User['_id'],param: { type: UserUpdateParam, value: string} ) => Promise<ApiResponseVals>
 	verifyCode: (code: Api_AuthVerify_Param) => Promise<Api_AuthVerify>
 	getVC: () => Promise<Api_AuthVC>
 	onPwUpdate: (code: Api_AuthPwUpdate_Param) => Promise<Api_AuthPwUpdate>
 	signOut: () => Promise<Api_AuthSignOut>
-	checkAuth: () => Promise<SubType<AuthState,'token'>|null>
-	getStorage: (id: StorageType) => Promise<{ [id]: string, time: Date }|false>
-	setStorage: ({key,value}:TokenStorageType) => Promise<void>
-	clearStorage: (id:StorageType) => void
+	refreshToken: (t:string) => Promise<ApiResponseVals>
 }
 
 type UpdateUser= {

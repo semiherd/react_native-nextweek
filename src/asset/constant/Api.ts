@@ -23,6 +23,7 @@ type typeApis={
 		getVC: Api
 		pwUpdate: Api
 		signOut: Api
+		refreshToken: Api
 	},
 	user: {
 		readUserasUser: Api
@@ -134,6 +135,12 @@ export const ApiList:typeApis= {
 				name: 'string',
 				email: 'string',
 				password: 'string'
+			}
+		},
+		refreshToken:{
+			url: `${baseUrl}/api/refreshToken`,
+			data: {
+				token: 'string',
 			}
 		}
 	},

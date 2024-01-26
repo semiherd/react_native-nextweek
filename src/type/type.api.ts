@@ -52,7 +52,11 @@ export const ApiResponse= {
 	verify: {
 		fail: 'Verification Failed',
 		success: 'Verification Successful',
-	},	
+	},
+	token: {
+		fail: 'Token Failed',
+		success: 'Token Confirmed',
+	}
 } as const 
 
 export type ApiResponseVals= NestedVal<typeof ApiResponse>
