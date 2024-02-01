@@ -46,6 +46,7 @@ type typeApis={
 	request:{
 		readSwapRequested: Api,
 		readSwapOffer: Api,
+		shiftSwapRequestCreate: Api,
 		shiftSwapOfferUpdate: Api,
 		readBlocker: Api,
 		createBlocker: Api,
@@ -198,13 +199,20 @@ export const ApiList:typeApis= {
 			url: `${baseUrl}/api/roster/shiftSwapOffer/update/`,
 			urlParam: `/id/revoke`
 		},
+		shiftSwapRequestCreate:{
+			url: `{{baseUrl}}/api/roster/shiftSwapRequest/create`,
+			data:{
+				user: "string",
+				shift: "string"
+			}
+		},
 		readBlocker:{
 			url: `${baseUrl}/api/roster/preferredShift/read`,
 		},
 		createBlocker:{
 			url: `${baseUrl}/api/roster/blocker/create`,
-			body: {
-				"shiftRosterTemplate": Body.string 
+			data: {
+				"shiftRosterTemplate": "string" //"6422d80961783351318e251e"
 			}
 		},
 		deleteBlocker:{
@@ -212,6 +220,11 @@ export const ApiList:typeApis= {
 		},
 		absenceCreate:{
 			url: `${baseUrl}/api/roster/absence/create`,
+			data: {
+				starting: 'string', //"2022-11-19T07:00:00.654+00:00"
+				ending: 'string', //"2022-11-19T07:00:00.654+00:00"
+				typeOfAbsence: 'number'
+			}
 		},
 		absenceRead:{
 			url: `${baseUrl}/api/roster/absence/read`,

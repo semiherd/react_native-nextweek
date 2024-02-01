@@ -20,7 +20,7 @@ export const stylesAlign= (
 
 
 export const handleBorder= (
-	param: `border-${'all' | SubType<direction,'vertical'|'horizontal'>}-${ColorValues}-${number}-${number}`
+	param: `border-${direction}-${ColorValues}-${number}-${number}`
 ) => {
 	
 	const paramList:string[]= param.split('-')

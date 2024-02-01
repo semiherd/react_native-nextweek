@@ -16,7 +16,7 @@ export  const mock_readBLocker:Api_ReadBlocker={
 		]
 }
 
-export  const mock_createBLocker:Api_CreateBlocker={
+export  const mock_createBlocker:Api_CreateBlocker={
 	"roster": "64231f7e5c23cc34ac68fe5c"
 }
 

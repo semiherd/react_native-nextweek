@@ -14,17 +14,12 @@ import { useUserState } from '../context/user/UserContext';
 
 const BottomTab = createBottomTabNavigator();
 
-const { width,height}= Dimensions.get('window')
-
 export default function BottomTabNav () {  
     const { user,manager} = useUserState()
     const userData= manager ?manager :user
-
-    const bottomTabHiddenScreens:string[]=['Chatroom']
-    
+    const bottomTabHiddenScreens:string[]=['Chatroom']    
     const { HOME,PROFILE,MESSAGE,ROSTER }= BOTTOMTABS
     const { ACTIVE,INACTIVE,WHITE }= BOTTOMTAB_NAV_TINTCOLOR
-
  
     return (   
         <BottomTab.Navigator 

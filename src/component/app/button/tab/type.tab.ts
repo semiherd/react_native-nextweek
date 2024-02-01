@@ -4,6 +4,7 @@ export interface TabProps<TVal>{
 	tabs: TVal[]
 	onClick:(item:TVal) => void
 	styling: ButtonStyling
+	width: number
 }
 
 export type TabItem<IdList>={

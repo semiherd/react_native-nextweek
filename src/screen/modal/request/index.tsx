@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react"
-import SubContainer from "../../../component/app/layout/SubContainer";
 import TabContent from './TabContent'
 import { TabWithContent } from '../../../component/app/button/index'
 import { TabItem, ButtonStyling } from '../../../component/app/button/tab/type.tab'
 import { RequestId } from '../../../type/type.request'
-import { Color } from "../../../asset/constant/Color";
 import { fontStyles } from '../../../asset/constant/FontStyles'
 import { useModalState } from '../../../context/modal/ModalContext'
 import { tabs } from './Tabs'
 
 const NewRequest = () => {
-	
 	const modalState= useModalState()
 	const [list,setList]= useState<TabItem<RequestId>[]>(tabs)
 
@@ -36,21 +33,19 @@ const NewRequest = () => {
 		handleActiveTab()
 	},[modalState.param])
 
-	const containerStyles={
-		containerWidth: 1,
-		bgColor: Color.blue
-	}
-	const styling:ButtonStyling= fontStyles.Modal.CreateRequest.tab.button.styles
+	const styling:ButtonStyling= {
+		...fontStyles.Modal.CreateRequest.tab.button.styles,
+		...fontStyles.Modal.CreateRequest.tab.font.style
 	
+	}
 	return (
-		<SubContainer styles={containerStyles}>
 			<TabWithContent<RequestId> 
 				tabs={list}
 				content={<TabContent tabs={list}  />}
 				styling={styling}
-			/>
-		</SubContainer>
+				width={0.85}
+			/>	
 	)
-};
+}
 
 export default NewRequest

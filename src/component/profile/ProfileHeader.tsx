@@ -58,14 +58,12 @@ const ProfileHeader = ({setting,backbutton}:{setting:boolean,backbutton:boolean}
 	}
   	return (
 			<SubContainer styles={headerContainer}>
-				<Row rowWidth={1} alignOption="space-between">
-					<Header 
-						title={<TitleComponent />}
-						icon={setting ?<SettingIcon /> :null}
-						text={null}
-						backbutton={backbutton}
-					/>
-				</Row>
+				<Header 
+					title={<TitleComponent />}
+					icon={setting ?<SettingIcon /> :null}
+					text={null}
+					backbutton={backbutton}
+				/>
 			</SubContainer>
   	)
 }

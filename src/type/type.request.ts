@@ -6,9 +6,9 @@ export type RequestRange= 'none' | 'day'
 export type RequestUpdateParam= 'revoked' | 'accepted'
 
 export type Request= 'Swap' | 'Vacation' | 'Event'
-export type RequestId= 'swap-in' | 'swap-out' | 'blocker' | 'absence' | 'vacation'
+export type RequestId= 'swap-in' | 'swap-out' | 'blocker' | 'absence-sickness' | 'absence-vacation' | 'absence-doctorvisit'
 
-export const AbsenceTypes= ['Sickness','Vacation','Doctor'] as const
+export const AbsenceTypes= ['Sickness','Vacation','DoctorVisit'] as const
 
 export type RequestBase= ManagerBase & StartEnd & Version
 

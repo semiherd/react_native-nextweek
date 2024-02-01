@@ -21,10 +21,7 @@ function TabButton<T>(
 	const style={	
 		...styling,
 		fontSize: width * 0.03,
-		backgroundColor: item.state
-			? styling.backgroundColor.selected || Color.transparent
-			: styling.backgroundColor.default || Color.transparent,
-		color:item.state
+		color: item.state
 			? styling.color.selected || Color.transparent
 			: styling.color.default || Color.transparent
 	}

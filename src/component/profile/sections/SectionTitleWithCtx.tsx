@@ -26,6 +26,6 @@ const SectionTitleWithCtx = (
 							param: { type: type as ModalName}
 						})}  
 					/>
-};
+}
 
 export default SectionTitleWithCtx

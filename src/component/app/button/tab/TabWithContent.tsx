@@ -2,6 +2,7 @@ import React,{ useEffect, useState } from "react"
 import { View } from 'react-native'
 import { ButtonStyling, TabItem } from './type.tab'
 import Tab from './Tab'
+import { Color } from "../../../../asset/constant/Color"
 
 function TabWithContent<T>(
 	props:
@@ -9,9 +10,10 @@ function TabWithContent<T>(
 		tabs: TabItem<T>[],
 		content: React.ReactElement
 		styling: ButtonStyling
+		width: number
 	}
 ){
-	const { tabs, content } = props
+	const { tabs, content, width } = props
 	const [tabState,setTabState]= useState<TabItem<T>[]>([])
 
 	async function initialState():Promise<void> {
@@ -39,14 +41,11 @@ function TabWithContent<T>(
 		initialState()
 	},[props])
 
-   const clonedContent = React.cloneElement(
-		content, 
-		{tabs: tabState}
-	)
+  const clonedContent = React.cloneElement(content, {tabs: tabState} )
 
 	return (
 		<View>
-			<Tab<T> tabs={tabState} onClick={onTabClick} styling={props.styling} />
+			<Tab<T> width={width} tabs={tabState} onClick={onTabClick} styling={props.styling} />
 			{clonedContent}
 		</View>
 	)

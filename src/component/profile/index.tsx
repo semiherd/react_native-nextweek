@@ -37,7 +37,7 @@ const ProfileHome = () => {
 					containerHeight: 2,
 					bgColor: Color.blue,
 					borderRadius: 15,
-					marginV: 0.15,
+					marginV: 0.08,
 				}}>
 					<ModalComponent 
 						{...modalState} top={0.1} 

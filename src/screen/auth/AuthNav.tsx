@@ -21,7 +21,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: '',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>
 			<Stack.Screen
@@ -30,7 +29,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: 'Sign in',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>
 			<Stack.Screen
@@ -39,7 +37,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: 'Sign Up',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>
 			<Stack.Screen
@@ -48,7 +45,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: 'Verify Email',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>
 			<Stack.Screen
@@ -57,7 +53,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: 'Get Started',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>		
 			<Stack.Screen
@@ -66,7 +61,6 @@ const Auth = () => {
 				options={{
 					headerShown: false,
 					title: 'Forgot Password',
-					//animationTypeForReplace: isSignout ? 'pop' : 'push'
 				}}
 			/>		
 		</Stack.Navigator>

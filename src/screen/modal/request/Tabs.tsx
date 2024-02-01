@@ -3,7 +3,7 @@ import { RequestId } from '../../../type/type.request'
 
 export const tabs:TabItem<RequestId>[]=[
 	{
-		id: 'request',
+		id: 'swap-out',
 		text: 'Shift',
 		state: false
 	},
@@ -13,12 +13,12 @@ export const tabs:TabItem<RequestId>[]=[
 		state: false
 	},
 	{
-		id: 'absence',
+		id: 'absence-vacation',
 		text: 'Vacation',
 		state: false
 	},
 	{
-		id: 'sickness',
+		id: 'absence-sickness',
 		text: 'Sick Note',
 		state: false
 	}

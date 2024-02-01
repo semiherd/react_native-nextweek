@@ -1,7 +1,11 @@
-import { ApiResponse, Api_ReadSwapRequest,Api_UpdateSwapOffer } from '../../type/type.api'
+import { ApiResponse, Api_ReadSwapRequest,Api_UpdateSwapOffer,Api_CreateSwapRequest } from '../../type/type.api'
 
 
 export const mock_updateSwapOfferUpdate:Api_UpdateSwapOffer= ApiResponse.swapUpdate.success
+
+export const mock_createSwapRequest:Api_CreateSwapRequest={
+  "shiftSwap": "636b61eecb661ea357ffae83"
+}
 
 export const mock_readSwaptofrom:Api_ReadSwapRequest={
 	"shiftSwapsOfferedToYou": [

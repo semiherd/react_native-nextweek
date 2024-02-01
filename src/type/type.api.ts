@@ -71,6 +71,14 @@ export type Api_UpdateUser<TVal>={
 }
 
 // SWAP
+export type Api_CreateSwapRequest_Param= {
+	"user": string
+	"shift": string
+}
+export type Api_CreateSwapRequest= {
+	"shiftSwap": string
+}
+
 export type Api_ReadSwapRequest= {
 	"shiftSwapsOfferedToYou": Swap[]
 	"shiftSwapsOfferedByYou": Swap[]

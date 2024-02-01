@@ -1,11 +1,11 @@
-import { CONTEXT_ACTIONS, ModalActionKeys, ModalActionVals } from '../../asset/constant/Actions'
+import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 
 export type ModalId= 'create-request'
-export type ModalName= 'myrequest' | 'absence' | 'blocker'
+export type ModalName= 'swap-out' | 'absence-vacation' | 'absence-sickness' | 'blocker'
 
 export type ModalParam<T>={
 	type: ModalName | null
-	input?: T
+	input: T | null
 }
 
 export type ModalState<T>= {

@@ -22,7 +22,7 @@ const SectionTitle = (
 	return (
 		<>
 			<View style={[
-					handleMP(`padding-bottom-3`),
+					handleMP(`padding-bottom-5`),
 					{alignSelf:'center'}
 				]}
 			>
@@ -38,6 +38,6 @@ const SectionTitle = (
 			</View>	
 		</>
 	)
-};
+}
 
 export default SectionTitle

@@ -1,50 +1,57 @@
-import React,{ useEffect, useState } from "react"
-import SubContainer from '../../../../component/app/layout/SubContainer'
-import VectorIcon from '../../../../component/app/icon/VectorIcon'
-import Time from './Time'
-import { View,Pressable } from 'react-native'
+import React from "react"
+import { View } from 'react-native'
 import { Color } from '../../../../asset/constant/Color'
-import { Row,Col } from '../../../../component/app/layout/Layout'
-import { Title } from '../../../../component/app/text/index'
-import { ContainerStyles, FontStyling } from '../../../../type/type.app'
+import { Row } from '../../../../component/app/layout/Layout'
+import { ContainerStyles } from '../../../../type/type.app'
 import { stylesAlign,handleMP } from "../../../../styling"
-import { fontStyles } from '../../../../asset/constant/FontStyles'
-import { TabItem } from '../../../../component/app/button/tab/type.tab'
-import { useModalDispatch } from '../../../../context/modal/ModalContext'
-
+import { StateType } from './Shift'
 
 const TimeLayout= (
-	{id,containerStyling,left,right,bottom}:
+	{id,containerStyling,left,right,bottom,state}:
 	{
-		id:string,
+		id: 'start'|'end',
 		containerStyling:ContainerStyles,
 		left:React.ReactElement,
 		right:React.ReactElement,
-		bottom:React.ReactElement
+		bottom:React.ReactElement,
+		state: StateType
 	}
 ) => {
-	const [state,setState]= useState<boolean>(false)
+	
 	const styling= [
 		stylesAlign(`alignSelf_center`).container,
-		handleMP(`padding-horizontal-5`),
-		handleMP(`margin-vertical-2`),
+		handleMP(`padding-left-2`),
+		handleMP(`padding-right-5`),
+		handleMP(`margin-vertical-3`),
 	]
+	
 	return (
-		<Col colNr={1} alignOption="center">
-			<>
+		<View style={[
+			handleMP(`padding-vertical-1`),
+			handleMP(`margin-left-3`),
+			{ 
+				borderTopWidth: 2, 
+				borderTopColor: Color.gray4,
+			}		
+		]}>
 			<Row rowWidth={containerStyling.containerWidth} alignOption="space-between">
 				<>
 					<View style={styling}>
 						{left}
 					</View>
-					<Pressable onPress={() => setState((prev) => !prev)} style={styling}>
+					<View style={styling}>
 						{right}
-					</Pressable>			
+					</View>			
 				</>
 			</Row>
-			{state && <View>{bottom}</View>}	
-			</>
-		</Col>
+			<View>
+				{state.id===null
+					? null 
+					: <View>{bottom}</View>
+				}	
+			</View>
+		</View>
+		
 	)
 }
 export default TimeLayout

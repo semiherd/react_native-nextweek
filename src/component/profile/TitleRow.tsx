@@ -28,7 +28,7 @@ const TitleRow= (
 						icon={icon}
 						text={text}
 						direction='row'
-						align="space-between"
+						align="center"
 						/>
 				</Pressable>
 				}

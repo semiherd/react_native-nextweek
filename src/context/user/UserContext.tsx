@@ -42,8 +42,8 @@ function UserProvider({ children }:{children: React.ReactNode}) {
       useMocked: true, //false to use static user data
       role: null, // 'User' | 'Manager'
       tokenValid: 1000*60*60, // one-hour-validity
-      token: null, //'test', // string  --make null to test login screen
-      refreshToken: null, // string
+      token: 'test', // string  --make null to test login screen
+      refreshToken: 'refresh', // string
       loading: true,
       user: null, //mocked_User, 
       manager: null //mocked_Manager

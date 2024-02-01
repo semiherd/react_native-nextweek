@@ -991,7 +991,7 @@ export const fontStyles= {
 						fontWeight: '400' as FontStyling['fontWeight'],
 						fontSize: 18,
 						lineHeight: 21.6,
-						color: Color.blue2_41,
+						color: Color.blue41,
 					}
 				}
 			},

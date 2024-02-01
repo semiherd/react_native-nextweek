@@ -8,10 +8,11 @@ const ModalDispatchCtx= React.createContext<ModalAPI>({} as ModalAPI)
 
 function ModalProvider({ children }:{children:React.ReactElement}) {
 
-  const initialState:ModalState<ModalParam<{type:ModalName}>>= {
+  const initialState:ModalState<ModalParam<{}>>= {
     id: null,
     param: {
-      type: null
+      type: null,
+      input: null
     }
   }
   const [modalState, dispatch] = React.useReducer(modalReducer, initialState);
@@ -27,14 +28,16 @@ function ModalProvider({ children }:{children:React.ReactElement}) {
     function open({id,param}:BaseApiParam) {
       dispatch({ 
         type: CONTEXT_ACTIONS.MODAL.INITIAL , 
-        data:{id,param} 
+        data: { id,param } 
       })
     }
 
     function insertInput<T>(param:T) {
       dispatch({ 
         type: CONTEXT_ACTIONS.MODAL.SET_INPUT , 
-        data: {input:param}
+        data: {
+          input:param
+        }
       })
     }
    
