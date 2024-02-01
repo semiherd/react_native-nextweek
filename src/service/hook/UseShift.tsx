@@ -17,11 +17,13 @@ import {
 	Api_DeleteShift,Api_DeleteShift_Param,
 	UpdateShiftOptions
 } from '../../type/type.api'
+import { useAxiosPriv } from '../../service/hook/UseAxiosPriv'
 import { AuthState } from "../../context/user/type.auth"
 
 export const useShift = () => {
 	const { getApi, postApi } = useFetchApi()
 	const { fetchUser } = useUser()
+	const axiosPriv = useAxiosPriv()
 	const {user,manager,useMocked,token}:AuthState= useUserState()
 
 	async function getUsers<T extends User['_id']>(list:T[]):Promise<User[]>{
@@ -44,7 +46,7 @@ export const useShift = () => {
 		try{
 			const { url }= ApiList.shift.readShift
 			const urlString= `${url}`
-			const data: Api_ReadShift|null= await getApi<Api_ReadShift,{}>(urlString,token)
+			const data: Api_ReadShift|null=await axiosPriv.get(urlString) 		
 			const source= useMocked ?mock_readPeopleInShift :data
 			const list:ShiftType['user'][]= source===null ?[] :source.shifts.map( item => item.user)
 			if(!list.length) return []
@@ -59,8 +61,8 @@ export const useShift = () => {
 	const readShift= async <T extends IdParam<ShiftType,'_id'>|IdParam<User,'_id'>>(id:T):Promise<Api_ReadShift['shifts']|null> => {
 		try{
 			const { url }= ApiList.shift.readShift
-			const urlString= `${url}`
-			const response: Api_ReadShift|null= await getApi<Api_ReadShift,{}>(urlString,token)
+			const urlString= `${url}`			
+			const response: Api_ReadShift|null= await axiosPriv.get(urlString)
 			if(response===null) return mock_readShift.shifts
 			else return response.shifts
 		}catch(e){
@@ -77,7 +79,7 @@ export const useShift = () => {
 				"starting": "2022-11-08T07:00:00.654+00:00",
 				"ending": "2022-11-08T15:00:00.654+00:00"
 			}
-			const response: Api_CreateShift|null= await postApi<Api_CreateShift,Api_CreateShift_Param>(urlString,token,param)
+			const response: Api_CreateShift|null= await axiosPriv.post(urlString,JSON.stringify(param))
 			if(response===null) return mock_createShift
 			else return response
 		}catch(e){
@@ -90,8 +92,7 @@ export const useShift = () => {
 		try{
 			const { url }= ApiList.shift.updateShift
 			const urlString= `${url}/${id}/${type}`		
-		
-			const response: Api_UpdateShift|null= await postApi<Api_UpdateShift,{}>(urlString,token)
+			const response: Api_UpdateShift|null= await axiosPriv.post(urlString)
 			if(response===null) return { changed: false}
 			return response
 		}catch(e){
@@ -104,7 +105,7 @@ export const useShift = () => {
 			const { url }= ApiList.shift.updateShift
 			const param= id
 			const urlString= `${url}/${id}`
-			const response: Api_DeleteShift|null= await postApi<Api_DeleteShift,Api_DeleteShift_Param>(urlString,token,param)
+			const response: Api_DeleteShift|null= await axiosPriv.post(urlString,JSON.stringify(param))
 			if(response===null) return {deletedShift:null}
 			return response
 

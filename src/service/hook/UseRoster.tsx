@@ -9,27 +9,25 @@ import { mock_swapRoster, mock_deleteRoster, mock_readRosterShift } from '../../
 import { useUserState } from '../../context/user/UserContext'
 import { useFetchApi } from '../hook/UseFetchApi'
 import { ApiList } from '../../asset/constant/Api'
+import { useAxiosPriv } from '../../service/hook/UseAxiosPriv'
 
 const { roster }= ApiList
 
 export const useRoster = () => {
 	const { useMocked,user,token }:AuthState= useUserState()
 	const { getApi, postApi } = useFetchApi()
+	const axiosPriv = useAxiosPriv()
 
 	const readRosterShift= async ():Promise<Api_ReadRosterShift> => {
 		try{
 			const { url }= roster.readRosterShift
 			const urlString= `${url}`
-			if(token){
-				const response:Api_ReadRosterShift|null= await getApi<Api_ReadRosterShift,{}>(urlString,token)
-				return useMocked 
+			const response:Api_ReadRosterShift|null= await axiosPriv.get(urlString)
+			return useMocked 
 					?	mock_readRosterShift 
 					:	response===null 
 						?	{ shifts: [] }
-						:	response
-			}else{
-				return { shifts: []}
-			}
+						:	response		
 		}catch(e){
 			return { shifts: []}
 		}
@@ -39,13 +37,11 @@ export const useRoster = () => {
 		try{
 			const { url }= roster.deleteRoster
 			const urlString= `${url}`
-			console.log('swapShiftInRoster',id)
-			if(token){
-				const response:Api_SwapShiftInRoster|null= await getApi<Api_SwapShiftInRoster,{}>(urlString,token)
-				return useMocked ?mock_swapRoster :response
-			}else{
-				return ApiResponse.delete.fail
-			}
+			const response:Api_SwapShiftInRoster|null= await axiosPriv.get(urlString)
+			return useMocked 
+				? mock_swapRoster 
+				: response
+			
 		}catch(e){
 			console.log(e)
 			return ApiResponse.delete.fail
@@ -56,12 +52,9 @@ export const useRoster = () => {
 		try{
 			const { url }= roster.deleteRoster
 			const urlString= `${url}`
-			if(token){
-				const response:Api_DeleteShiftInRoster|null= await getApi<Api_DeleteShiftInRoster>(urlString,token)
-				return useMocked ?mock_deleteRoster :response
-			}else{
-				return ApiResponse.delete.fail
-			}
+			const response:Api_DeleteShiftInRoster|null= await axiosPriv.get(urlString)
+			return useMocked ?mock_deleteRoster :response
+			
 		}catch(e){
 			console.log(e)
 			return ApiResponse.delete.fail

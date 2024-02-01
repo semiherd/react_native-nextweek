@@ -7,6 +7,7 @@ import { Pressable } from 'react-native'
 import { useModalState,useModalDispatch } from '../../../context/modal/ModalContext'
 import { useUserState } from '../../../context/user/UserContext'
 import { useRequest } from '../../../service/hook/UseRequest'
+import { useProgressDispatch } from "../../../context/progress/ProgressContext";
 
 const actionStyling:FontStyling= fontStyles.Modal.CreateRequest.header.action.style
 const titleStyling:FontStyling= fontStyles.Modal.CreateRequest.header.title.style
@@ -14,23 +15,28 @@ const titleStyling:FontStyling= fontStyles.Modal.CreateRequest.header.title.styl
 const Header = () => {
 	const modalState = useModalState()
 	const { close } = useModalDispatch()
+	const { updateError,updateLoading, resetError,resetLoading }= useProgressDispatch()
 	const { createAbsence,createBlocker,createShiftSwapRequest } = useRequest()
 	
 	async function handleNewRequest(){
 		try{	
-			console.log('modalState:',modalState);
+			await updateLoading({})
 			if(modalState.param?.type==='absence-vacation'){
-				await createAbsence({
-					starting: modalState.param.input.start,
-					starting: modalState.param.input.end,
-					typeOfAbsence: 0,
-				})
+				if(modalState.param.input){
+					await createAbsence({
+						starting: modalState.param.input.start,
+						ending: modalState.param.input.end,
+						typeOfAbsence: 0,
+					})
+				}
 			}else if(modalState.param?.type==='absence-sickness'){
-				await createAbsence({
-					starting: modalState.param.input.start,
-					starting: modalState.param.input.end,
-					typeOfAbsence: 1,
-				})
+				if(modalState.param.input){
+					await createAbsence({
+						starting: modalState.param.input.start,
+						ending: modalState.param.input.end,
+						typeOfAbsence: 1,
+					})
+				}
 			}else if(modalState.param?.type==='blocker'){
 				await createBlocker("") //shiftRosterTemplate: "" //SHIFTROSTER_ID
 			}else if(modalState.param?.type==='swap-out'){

@@ -18,6 +18,8 @@ import {
 	Api_CreateBlocker_Param,
 	Api_CreateBlocker,
 	Api_CreateSwapRequest_Param,
+	Api_CreateAbsence,
+	Api_CreateAbsence_Param,
 } from '../../type/type.api'
 import { 
 	mock_readSwaptofrom, 
@@ -33,6 +35,7 @@ import {
 	mock_updateAbsenceChanged,
 	mock_updateAbsence,
 } from '../../__mock__/api/absence'
+import { useAxiosPriv } from '../../service/hook/UseAxiosPriv'
 
 
 const { request }= ApiList
@@ -40,15 +43,15 @@ const { request }= ApiList
 export const useRequest = () => {
 	const { useMocked, user,manager,token }:AuthState= useUserState()
 	const { getApi, postApi, isLoading, error } = useFetchApi()
+	const axiosPriv = useAxiosPriv()
 
 	const fetchRequest= async ():Promise<Api_ReadSwapRequest|null> => {
 		try{
 			const urlString= request.readSwapRequested.url
-			const response:Api_ReadSwapRequest|null= await getApi<Api_ReadSwapRequest,{}>(urlString,token)
+			const response:Api_ReadSwapRequest|null= await axiosPriv.get(urlString) 
 			return useMocked
 				? mock_readSwaptofrom
-				: response
-			
+				: response		
 		}catch(e){
 			return null
 		}
@@ -56,7 +59,7 @@ export const useRequest = () => {
 
 	const fetchBlocker= async ():Promise<Api_ReadBlocker|null> => {
 		try{
-			const response:Api_ReadBlocker|null= await getApi<Api_ReadBlocker,{}>(request.readBlocker.url,token)
+			const response:Api_ReadBlocker|null= await axiosPriv.get(request.readBlocker.url)
 			return useMocked
 				? mock_readBLocker
 				: response
@@ -68,7 +71,7 @@ export const useRequest = () => {
 	const fetchAbsence= async ():Promise<Api_ReadAbsence|null> => {
 		try{
 			const urlString= `${request.absenceRead.url}`
-			const response:Api_ReadAbsence|null= await getApi<Api_ReadAbsence,{}>(urlString,token)
+			const response:Api_ReadAbsence|null= await axiosPriv.get(urlString)
 			return useMocked 
 					?	mock_readAbsence 
 					:	response
@@ -81,7 +84,7 @@ export const useRequest = () => {
 	const updateSwap= async (id:ShiftType['_id'],type: RequestUpdateParam):Promise<ApiResponseVals|Api_UpdateSwapOffer|null> => {
 		try{
 			const url= `${request.shiftSwapOfferUpdate.url}/${id}/${type}`
-			const response:Api_UpdateSwapOffer|null= await getApi<Api_UpdateSwapOffer,{}>(url,token)
+			const response:Api_UpdateSwapOffer|null= await axiosPriv.get(url)
 			return useMocked 
 					?	mock_updateSwapOfferUpdate 
 					:	response		
@@ -93,7 +96,7 @@ export const useRequest = () => {
 	const updateAbsence= async (id:Absence['_id'], data: {absence:Absence}):Promise<ApiResponseVals|Api_UpdateAbsence|null> => {
 		try{
 			const url= `${request.absenceUpdate.url}/${id}`
-			const response:Api_UpdateAbsence|null= await getApi<Api_UpdateAbsence,{absence:Absence}>(url,token,data)
+			const response:Api_UpdateAbsence|null= await axiosPriv.get(url,JSON.stringify(data))
 			return useMocked 
 				?	mock_updateAbsence
 				:	response
@@ -107,7 +110,7 @@ export const useRequest = () => {
 		try{
 			const updateType:Api_UpdateAbsence_Param= type
 			const url= `${request.absenceUpdateChanged.url}/${id}/${updateType}`
-			const response:Api_UpdateAbsenceChanged|null= await getApi<Api_UpdateAbsenceChanged,{}>(url,token)
+			const response:Api_UpdateAbsenceChanged|null= await axiosPriv.get(url) 
 			return useMocked 
 				?	mock_updateAbsenceChanged 
 				:	response
@@ -126,7 +129,7 @@ export const useRequest = () => {
 					user: userId,
 					shift: id
 				}
-				const response:Api_CreateSwapRequest|null= await getApi<Api_CreateSwapRequest,typeof param>(urlString,token)
+				const response:Api_CreateSwapRequest|null= await axiosPriv.get(urlString,JSON.stringify(param))
 				return useMocked
 					? mock_createSwapRequest
 					: response		
@@ -137,10 +140,10 @@ export const useRequest = () => {
 		}
 	}
 
-	const createAbsence= async (id:Absence['_id'], data: {absence:Absence}):Promise<ApiResponseVals|Api_UpdateAbsence|null> => {
+	const createAbsence= async ( param: {starting:string,ending:string,typeOfAbsence:number}):Promise<ApiResponseVals|Api_CreateAbsence|null> => {
 		try{
-			const url= `${request.absenceUpdate.url}/${id}`
-			const response:Api_UpdateAbsence|null= await getApi<Api_UpdateAbsence,{absence:Absence}>(url,token,data)
+			const url= `${request.absenceCreate.url}`
+			const response:Api_CreateAbsence|null= await axiosPriv.get(url,JSON.stringify(param))
 			return useMocked 
 				?	mock_updateAbsence
 				:	response
@@ -156,7 +159,7 @@ export const useRequest = () => {
 			const param:Api_CreateBlocker_Param= {
 				"shiftRosterTemplate": id
 			}
-			const response:Api_UpdateAbsence|null= await getApi<Api_UpdateAbsence,typeof param>(url,token,param)
+			const response:Api_UpdateAbsence|null= await axiosPriv.get(url,JSON.stringify(param))
 			return useMocked 
 				?	mock_createBlocker
 				:	response

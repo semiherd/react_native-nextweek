@@ -50,8 +50,10 @@ import { useFetchApi, useUser } from '../../service/hook/index'
 import { useUserState } from '../../context/user/UserContext'
 import { useProgressDispatch } from '../../context/progress/ProgressContext'
 import { sortByKey } from '../../service/app/SortByKey'
+import { useAxiosPriv } from '../../service/hook/UseAxiosPriv'
 
 export const useMessage = () => {
+	const axiosPriv = useAxiosPriv()
 	const { user,manager,token,useMocked }= useUserState()
 	const { updateError, updateLoading }= useProgressDispatch()
 	const { getApi, postApi, isLoading, error }= useFetchApi()
@@ -70,9 +72,9 @@ export const useMessage = () => {
 				return { state: 'fail', error: 'url is missing'}
 			}
 			const response:Api_CreateQuestion|null= manager
-					? await getApi<Api_CreateQuestionAsManager,{}>(urlString,token,props.param)
+					? await axiosPriv.get(urlString,JSON.stringify(props.param))
 					: user
-						? await getApi<Api_CreateQuestionAsUser,{}>(urlString,token,props.param)
+						? await axiosPriv.get(urlString,JSON.stringify(props.param))
 						: null
 			return { 
 				state: 'success', 
@@ -102,9 +104,9 @@ export const useMessage = () => {
 				: `${ApiList.question.readAnswerAsUser.url}/${urlParam}`
 		
 			const response:Api_ReadQuestion|null= manager
-					? await getApi<Api_ReadQuestionAsManager,{}>(urlString,token)
+					? await axiosPriv.get(urlString)
 					: user
-						? await getApi<Api_ReadQuestionAsUser,{}>(urlString,token)
+						? await axiosPriv.get(urlString)
 						: null
 			return { 
 				state: 'success', 
@@ -130,9 +132,9 @@ export const useMessage = () => {
 				: `${ApiList.question.deleteAnswerAsUser.url}/${urlParam}`
 		
 			const response:Api_DeleteQuestion|null= manager
-					? await getApi<Api_DeleteQuestionAsManager,{}>(urlString,token)
+					? await axiosPriv.get(urlString)
 					: user
-						? await getApi<Api_DeleteQuestionAsUser,{}>(urlString,token)
+						? await axiosPriv.get(urlString)
 						: null
 			return { 
 				state: 'success', 
@@ -153,7 +155,7 @@ export const useMessage = () => {
 		try{
 			const urlParam:string= `${props.id}/${props.type}`
 			const urlString= `${ApiList.question.updateAnswerReaction.url}/${urlParam}` 			
-			const response:Api_UpdateAnswerReaction|null= await getApi<Api_UpdateAnswerReaction,{}>(urlString,token)				
+			const response:Api_UpdateAnswerReaction|null= await axiosPriv.get(urlString)			
 			if(!useMocked && response===null){
 				return {
 					state: 'fail', error: 'null-response'
@@ -173,7 +175,7 @@ export const useMessage = () => {
 	const updateAnswerIsRead= async <T extends Api_UpdateAnswerIsRead_Param>(props: T ):Promise<ApiResponse_Question<Api_UpdateAnswerIsRead>> => {
 		try{
 			const urlString= `${ApiList.question.updateAnswerIsRead.url}` 			
-			const response:Api_UpdateAnswerIsRead|null= await getApi<Api_UpdateAnswerIsRead,{}>(urlString,token)				
+			const response:Api_UpdateAnswerIsRead|null= await axiosPriv.get(urlString)				
 			return { 
 				state: 'success', 
 				data: useMocked 
@@ -188,7 +190,7 @@ export const useMessage = () => {
 	const updateQuestion= async <T extends Api_UpdateQuestion_Param>(props: T ):Promise<ApiResponse_Question<Api_UpdateQuestion>> => {
 		try{
 			const urlString= `${ApiList.question.updateQuestionAsManager.url}/${props.id}` 			
-			const response:Api_UpdateQuestion|null= await getApi<Api_UpdateQuestion,{}>(urlString,token,props.param)				
+			const response:Api_UpdateQuestion|null= await axiosPriv.get(urlString)			
 			return { 
 				state: 'success', 
 				data: useMocked 
@@ -208,7 +210,7 @@ export const useMessage = () => {
 				"priority": 1
 		  }
 			const urlString= ApiList.message.createMessage.url
-			const response:Api_CreateMessage|null= await getApi<Api_CreateMessage,{}>(urlString,token,data)
+			const response:Api_CreateMessage|null= await axiosPriv.get(urlString,JSON.stringify(data))
 			if(!useMocked && response===null){
 				return {
 					state: 'fail',
@@ -279,7 +281,7 @@ export const useMessage = () => {
 	const createChat= async ():Promise<ApiResponse_Chat<Api_CreateChat>> => {
 		try{	
 			const urlString= ApiList.chat.createChat.url
-			const response:Api_CreateChat|null= await getApi<Api_CreateChat,{}>(urlString,token)
+			const response:Api_CreateChat|null= await axiosPriv.get(urlString)
 			return { 
 				state: 'success', 
 				data: useMocked ?mock_createChat :response 
@@ -301,9 +303,9 @@ export const useMessage = () => {
 				return { state: 'fail' , error: 'urlString is missing' }
 			}else{
 				const response:Api_ReadChatAsManager|Api_ReadChatAsUser|null= manager
-					? await getApi<Api_ReadChatAsManager,{}>(urlString,token)
+					? await axiosPriv.get(urlString)
 					: user
-						? await getApi<Api_ReadChatAsUser,{}>(urlString,token)
+						? await axiosPriv.get(urlString)
 						: null
 				return { 
 					state: 'success', 
@@ -324,7 +326,7 @@ export const useMessage = () => {
 	const readMessage= async (room:Room['id']):Promise<ApiResponse_Message<Api_ReadMessage>> => {
 		try{
 			const urlString= ApiList.message.readMessage.url
-			const response:Api_ReadMessage|null= await getApi<Api_ReadMessage,{}>(urlString,token)
+			const response:Api_ReadMessage|null= await axiosPriv.get(urlString)
 			return { state: 'success', data: useMocked ?mock_readMessage :response }			
 		}catch(e){
 			return { state: 'fail', error: e }
@@ -339,7 +341,7 @@ export const useMessage = () => {
 				priority: 1
 			}	
 			const urlString= ApiList.message.updateMessage.url
-			const response:Api_UpdateMessage|null= await postApi<Api_UpdateMessage,{}>(urlString,token,data)
+			const response:Api_UpdateMessage|null= await axiosPriv.post(urlString,JSON.stringify(data))
 			return { state: 'success', data: useMocked ?mock_updateMessage :response }			
 		}catch(e){
 			return { state: 'fail', error: e }
@@ -350,7 +352,7 @@ export const useMessage = () => {
 		try{
 			
 			const urlString= `${ApiList.message.updateMessage.url}/id`
-			const response:Api_DeleteMessage|null= await postApi<Api_DeleteMessage,{}>(urlString,token)
+			const response:Api_DeleteMessage|null= await axiosPriv.post(urlString)
 			return { state: 'success', data: useMocked ?mock_deleteMessage :response }			
 		}catch(e){
 			return { state: 'fail', error: e }
@@ -360,7 +362,7 @@ export const useMessage = () => {
 		try{
 			if(manager){
 				const urlString= `${ApiList.chat.deleteChatAsManager.url}/id`
-				const response:Api_DeleteChatAsManager|null= await postApi<Api_DeleteChatAsManager,{}>(urlString,token)
+				const response:Api_DeleteChatAsManager|null= await axiosPriv.post(urlString)
 				return { 
 					state: 'success', 
 					data: useMocked ?mock_deleteChatAsManager :response 

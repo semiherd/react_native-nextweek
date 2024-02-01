@@ -1,14 +1,14 @@
 import React,{ useMemo } from 'react';
 import { modalReducer } from './ModalReducer';
 import { BaseApiParam, ModalParam, ModalState, ModalAPI, ModalName } from './type.modal'
-import { CONTEXT_ACTIONS,ModalActionVals } from '../../asset/constant/Actions'
+import { CONTEXT_ACTIONS } from '../../asset/constant/Actions'
 
 const ModalStateCtx = React.createContext<ModalState<ModalParam<{type:ModalName}>>>({} as ModalState<ModalParam<{type:ModalName}>>)
 const ModalDispatchCtx= React.createContext<ModalAPI>({} as ModalAPI)
 
 function ModalProvider({ children }:{children:React.ReactElement}) {
 
-  const initialState:ModalState<ModalParam<{}>>= {
+  const initialState:ModalState<ModalParam<{id:null,param:{type:null,input:null}}>>= {
     id: null,
     param: {
       type: null,
@@ -25,7 +25,7 @@ function ModalProvider({ children }:{children:React.ReactElement}) {
       })
     }
 
-    function open({id,param}:BaseApiParam) {
+    function open<T extends Object>({id,param}:BaseApiParam<T>) {
       dispatch({ 
         type: CONTEXT_ACTIONS.MODAL.INITIAL , 
         data: { id,param } 
